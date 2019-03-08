@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Konstantin Yelisevich</title>
+  <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="supersized.core.css"/>
+	<link href="http://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="supersized.3.1.3.core.min.js"></script>
+	<script>
+		$(function() {   
+		
+			var theWindow        = $(window),
+			    $bg              = $("#bg"),
+			    aspectRatio      = $bg.width() / $bg.height();
+			    			    		
+			function resizeBg() {
+				
+				if ( (theWindow.width() / theWindow.height()) < aspectRatio ) {
+				    $bg
+				    	.removeClass()
+				    	.addClass('bgheight');
+				} else {
+				    $bg
+				    	.removeClass()
+				    	.addClass('bgwidth');
+				}
+							
+			}
+			                   			
+			theWindow.resize(function() {
+				resizeBg();
+			}).trigger("resize");
+		
+		});
+		$(function($){
+				$.supersized({
+					//Background image
+					slides	:  [ { image : 'bg.jpg' } ]					
+				});
+			});
+	</script>
+</head>
+<body>
+  <!--<img src="bg.jpg" id="bg" alt="">-->
+  <div id="page-wrap">
+		<div class="logo">
+			<img src="logo.png"/> 
+		</div>
+        <div class="reel">
+           <!--  <iframe src="http://player.vimeo.com/video/39725630?title=0&amp;byline=0&amp;portrait=0&amp;color=7c9835" width="950" height="534" frameborder="0" 
+            webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> -->
+            <iframe src="https://player.vimeo.com/video/126449509?color=85a116&amp;title=0&amp;byline=0&amp;portrait=0" width="950" height="534" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> 
+        </div>
+        <h2>Contact Info</h2>
+        <div id="contact">					
+          <form id="serverless-contact-form">
+              <fieldset>
+                  <label for="name">Name:</label>
+                  <input type="text" name="name" id="name" class="form-name" placeholder="Enter your full name"/>
+      
+                  <label for="email">Email:</label>
+                  <input type="email" name="email" id="email" class="form-email" placeholder="Enter your email address"/>
+      
+                  <label for="message">Message:</label>
+                  <textarea id="message" name="message" class="form-message" placeholder="What's on your mind?"></textarea>
+      
+                  <input type="submit" id="submit" class="form-submit" value="Send message"/>
+      
+              </fieldset>
+          </form>
+		</div>
+        <div class="contactInfo">
+        	<ul>
+            	<li>Email: <a href="mailto:konstantin.yel@gmail.com?Subject=Contact%20Form%20Submission">konstantin.yel@gmail.com</a></li></br>
+              <li>Phone: 347 617 6311</li>
+            </ul>
+        </div>
+	</div>
+</body>
+<script type="text/javascript">
+	// Adds an event listener to our form. When the form is submitted, it will send data to our Lambda function, which in turn, will send us an email.
+	document.getElementById('serverless-contact-form').addEventListener('submit', sendDataToLambda);
+	// Now for the good stuff. This is the function that will send our data to AWS.
+	function sendDataToLambda(e) {
+	e.preventDefault();
+	// Gets the values of each field in our form. This is the data we'll send to our Lambda function.
+	var formEmail = document.querySelector('.form-email').value;
+	var formName = document.querySelector('.form-name').value;
+	var formMessage = document.querySelector('.form-message').value;
+	// This is the endpoint we created in our API Gateway. This is where we make our POST request, which calls our Lambda function.
+	var endpoint = 'https://pb920txsn8.execute-api.us-east-1.amazonaws.com/prod/ContactFormLambda';
+	// Remember those form values we just grabbed? We're going to put them into an object here.
+	var body = {
+		email: formEmail,
+		name: formName,
+		message: formMessage
+	}
+	// Here, we instantiate our Request. This is a special object used by the Fetch API so it knows where to send data, what data to send, and how to send it.
+	var lambdaRequest = new Request(endpoint, {
+		method: 'POST',
+		// Quick note: 'no-cors' mode is for development on localhost only!
+		mode: 'no-cors',
+		body: JSON.stringify(body)
+	});
+	// Call the Fetch API to make our request
+	fetch(lambdaRequest)
+		// This is where you can handle errors. This is just an example, so we won't cover that.
+		.then(response => {
+			console.log(response)
+			document.getElementById("serverless-contact-form").reset();
+		})
+		.catch(err => console.log(err));
+	}
+</script>
+</html>

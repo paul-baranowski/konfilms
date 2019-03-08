@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "name": "konfilms",
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@now/html-minifier"
+    },
+    {
+      "src": "main.css",
+      "use": "@now/html-minifier"
+    }
+  ]
+}
